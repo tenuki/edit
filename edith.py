@@ -147,10 +147,11 @@ class D2Array:
 
 
 class Distance:
-    def __init__(self, fromstr, tostr):
+    def __init__(self, fromstr, tostr, cmp_op=lambda x, y:x==y):
         self.tostr = tostr
         self.fromstr = fromstr
         self.d2 = None
+        self.cmp_op = cmp_op
 
     def setup_op_matrix(self, x, y):
         prev_x = lambda d, idx: d.get(0, idx - 1)
@@ -169,7 +170,7 @@ class Distance:
 
         for j in range(1, n):  # to / Y
             for i in range(1, m):  # from / X
-                if self.fromstr[i - 1] == self.tostr[j - 1]:
+                if self.cmp_op(self.fromstr[i - 1], self.tostr[j - 1]):
                     temp = self.d2.get(i - 1, j - 1)
                 else:
                     deletion = self.d2.get(i - 1, j) + [Deletion(i)]  # -
