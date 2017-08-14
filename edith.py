@@ -9,7 +9,7 @@ class Edition(object):
         return self.__class__ is other.__class__
 
     @staticmethod
-    def Apply(src, path, debug=True):
+    def Apply(src, path, debug=False):
         def iter_chain(chain, deletes=False):
             d = 1 if not deletes else -1
             for edition in chain[::d]:
@@ -34,6 +34,9 @@ class Edition(object):
                 current = run(edit, current)
         return current
 
+    def wrap_element(self, element, context):
+        return [element] if isinstance(context, list) else element
+
 
 class Sustitution(Edition):
     def __init__(self, x, what):
@@ -47,11 +50,11 @@ class Sustitution(Edition):
         return 'sust-%d-%c' % (self.x, self.what)
 
     def __repr__(self):
-        return '\S%d%c' % (self.x, self.what)
+        return '\\S%d%c' % (self.x, self.what)
 
     def apply(self, on):
-        on = on[:self.x - 1] + self.what + on[self.x:]
-        return on
+        what = self.wrap_element(self.what, on)
+        return on[:self.x - 1] + what + on[self.x:]
 
 
 class Insertion(Edition):
@@ -69,12 +72,8 @@ class Insertion(Edition):
         return '|I%d%c' % (self.x, self.what)
 
     def apply(self, on):
-        if isinstance(on[:self.x], list):
-            what = [self.what]
-        else:
-            what = self.what
-        on = on[:self.x] + what + on[self.x:]
-        return on
+        what = self.wrap_element(self.what, on)
+        return on[:self.x] + what + on[self.x:]
 
 
 class Deletion(Edition):

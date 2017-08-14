@@ -26,7 +26,7 @@ It is based on:
     >>> print [str(x) for x in dst.editpath()]
     ['del-2', 'del-3', 'sust-3-n']
 
-    >>> edith.Edition.Apply("Saturday", dst.editpath())
+    >>> edith.Edition.Apply("Saturday", dst.editpath(), debug=True)
     del-3 : Saturday -> Saurday
     del-2 : Saurday -> Surday
     sust-3-n : Surday -> Sunday
